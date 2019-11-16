@@ -1,0 +1,8 @@
+CREATE TABLE products (
+id INT(10) NOT NULL AUTO_INCREMENT,
+products_name VARCHAR(25) NOT NULL,
+department_id INT(10) NOT NULL,
+price DECIMAL(10,2) NOT NULL,
+stock_quantity INTEGER(50) NOT NULL,
+PRIMARY KEY(id)
+);
