@@ -1,6 +1,7 @@
 // Pull in required dependencies
 var inquirer = require('inquirer');
 var mysql = require('mysql');
+var table = require('table');
 
 // var itemID = 
 // var item_Quantity = 
@@ -11,7 +12,7 @@ var mysql = require('mysql');
 
 // 	user: 'root',
 
-// 	password: 'Gokatie1',
+	// password: 'Gokatie1',
 // 	database: 'bamazon_db'
 // });
 
@@ -21,37 +22,61 @@ var mysql = require('mysql');
 // 	connection.end();
 //   });
 
+
+// function testNumberChecker () {
+// 	if ( -5 > 0 ){
+// 		console.log("True")
+// 		return true;
+// 	}
+// 	else {
+// 		console.log("False");
+// 		return false;
+// 	}
+// }
+
+// testNumberChecker();
+
+
 runBamazon();
 
 function validateIDCheck(input) {
 	// verify number is a counting number
-	if (input.item_ID > 0)  {
+	if (parseInt(input.item_ID) > 0)  {
 		console.log("1/2 Number Validated")
 		return true;
 	} else {
+		console.log("Failed 1/2 Item ID Counting Number Check");
 		return "Failed 1/2 Item ID Counting Number Check";
 	}	  
 };
 
 function validateQuantityCheck(input) {
 	// verify number is a counting number
-	if (input.item_Quantity > 0)  {
+	if (parseInt(input.item_Quantity) > 0)  {
 		console.log("2/2 Number Validated")
 		return true;
 	} else {
+		console.log("Failed 2/2 Quantity Counting Number Check");
 		return "Failed 2/2 Quantity Counting Number Check";
 	}	  
 };
 
 function validateCountingNumberCheck(input) {
 	// verify number is a counting number
-	if (input.item_Quantity && input.item_ID > 0)  {
+	if (parseInt(input.item_Quantity) && parseInt(input.item_ID) > 0)  {
 		console.log("Double Check Passed")
 		return true;
 	} else {
-		return "Failed Double Check";
+		console.log("Failed Double Check")
+		errorReturn();
+		return false;
 	}	  
 };
+
+function errorReturn() {
+	console.log("Something went wrong, please try again");
+	runBamazon();
+}
 
 function inventoryDisplay() {
 
@@ -82,19 +107,20 @@ inquirer.prompt([
 	console.log("Item ID chosen is " + input.item_ID);
 	console.log("Item quantity decided upon is " + input.item_Quantity);
 	console.log("got through!")
-	var itemID = input.item_ID;
-	var item_Quantity = input.item_Quantity;
+	var itemID = parseInt(input.item_ID);
+	var item_Quantity = parseInt(input.item_Quantity);
 	quantityCheck();
 	  
 })};
 
 function quantityCheck() {
 
-	// if item ID exists && quantity > sql quantity check
+	// if (item ID exists && quantity > sql quantity check){
 	// sufficientQuantity() 
-	// else 
+// }
+	// else { 
 	// insufficientQuantity()
-	  
+// };
 };
 
 function sufficientQuantity() {
@@ -102,17 +128,19 @@ function sufficientQuantity() {
 	// SQL query quantity check
 	// call order total calculation
 	// orderTotalCalculation();
+	orderTotalCalculation();
 
 };
 
 function insufficientQuantity() {
 	//   Console log error, kick out user
-	runBamazon();
+	console.log("We don't have enough!")
+	errorReturn();
 };
 
 function orderTotalCalculation() {
 	// log quantity * price
-	// console.log("Thank you for your purchase")
+	console.log("Thank you for your purchase")
 	// kick user back out
 	  
 };
