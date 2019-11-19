@@ -71,6 +71,8 @@ connection.connect(function (err) {
 // 	}	  
 // };
 
+// Check with mod % 1 = 0
+
 function validateCountingNumberCheck(input) {
 	// verify number is a counting number
 	if (parseInt(input.item_Quantity) && parseInt(input.item_ID) > 0) {
@@ -96,23 +98,28 @@ function inventoryDisplay() {
 		// console.log(results)
 
 		var products = results.map(product => {
+			// console.log(product)
 			return {
 				id: product.id,
 				name: product.products_name,
+				department: product.department_name,
+				price: product.price,
+				stock: product.stock_quantity
 			}
 		})
 		// console.log(products);
 		var table = new Table({
-			head:["product.id", "product.name"]
+			head:["Item ID", "Name", "Department", "Price", "Quantity in Stock"]
 		})
 		for (product of products) {
 			
-			table.push([product.id, product.name])
+			table.push([product.id, product.name, product.department, product.price, product.stock])
 		
 		}
 		console.log(table.toString());
 	})
 
+	customerInquirer();
 	// getting back results - now need to put it in a table
 };
 
