@@ -1,16 +1,9 @@
 // Pull in required dependencies
 var inquirer = require('inquirer');
 var mysql = require('mysql');
-// var table = require('table');
 var Table = require('cli-table');
+var confirm = require('inquirer-confirm');
 
-// command to print table
-// console.log()
-// SELECT * FROM sometable\G
-
-// var itemID = 
-// var item_Quantity = 
-// keep this variable global
 var connection = mysql.createConnection({
 	host: 'localhost',
 	port: 3306,
@@ -26,7 +19,7 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
 	if (err) throw err;
 	console.log("connected as id " + connection.threadId)
-	inventoryDisplay();
+	// inventoryDisplay();
 	// runBamazon();
 	// connection.end();
 });
@@ -109,7 +102,7 @@ function inventoryDisplay() {
 		})
 		// console.log(products);
 		var table = new Table({
-			head:["Item ID", "Name", "Department", "Price", "Quantity in Stock"]
+			head:["ID", "Name", "Department", "Price", "Quantity in Stock"]
 		})
 		for (product of products) {
 			
@@ -118,12 +111,11 @@ function inventoryDisplay() {
 		}
 		console.log(table.toString());
 	})
-
-	customerInquirer();
-	// getting back results - now need to put it in a table
+doubleCheck();
 };
 
 function customerInquirer() {
+	console.log("Got to inquirer")
 	inquirer.prompt([
 		{
 			type: 'input',
@@ -156,6 +148,7 @@ function customerInquirer() {
 			var itemID = parseInt(input.item_ID);
 			var item_Quantity = parseInt(input.item_Quantity);
 			// quantityCheck();
+			quantityCheck(item_Quantity);
 		}
 		else {
 			console.log("Something is wrong")
@@ -177,7 +170,7 @@ function quantityCheck() {
 
 function sufficientQuantity() {
 	//   console log success
-	// SQL query quantity check
+	// Ssubtract from amount on SQL file
 	// call order total calculation
 	// orderTotalCalculation();
 	orderTotalCalculation();
@@ -198,6 +191,19 @@ function orderTotalCalculation() {
 };
 
 function runBamazon() {
-	// inventoryDisplay();
-	customerInquirer();
+	inventoryDisplay();
+	// customerInquirer();
+	// doubleCheck();
 };
+
+function doubleCheck() {
+confirm('Would you like to purchase anything?')
+  .then(function confirmed() {
+	console.log('Which item would you like to buy?');
+
+  }, function cancelled() {
+    console.log('Come back anytime');
+  });
+}
+
+runBamazon();
