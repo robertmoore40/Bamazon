@@ -14,64 +14,22 @@ var connection = mysql.createConnection({
 	database: 'bamazon_db'
 });
 
-// put below in a specific function
-// I will eventually need a connection.end
 connection.connect(function (err) {
 	if (err) throw err;
 	console.log("connected as id " + connection.threadId)
-	// inventoryDisplay();
-	// runBamazon();
-	// connection.end();
 });
-// then run inquirer
 
-
-// function testNumberChecker () {
-// 	if ( -5 > 0 ){
-// 		console.log("True")
-// 		return true;
-// 	}
-// 	else {
-// 		console.log("False");
-// 		return false;
-// 	}
-// }
-
-// testNumberChecker();
-
-
-
-
-// function validateIDCheck(input) {
-// 	// verify number is a counting number
-// 	if (parseInt(input.item_ID) > 0)  {
-// 		console.log("1/2 Number Validated")
-// 		return true;
-// 	} else {
-// 		console.log("Failed 1/2 Item ID Counting Number Check");
-// 		return "Failed 1/2 Item ID Counting Number Check";
-// 	}	  
-// };
-
-// function validateQuantityCheck(input) {
-// 	// verify number is a counting number
-// 	if (parseInt(input.item_Quantity) > 0)  {
-// 		console.log("2/2 Number Validated")
-// 		return true;
-// 	} else {
-// 		console.log("Failed 2/2 Quantity Counting Number Check");
-// 		return "Failed 2/2 Quantity Counting Number Check";
-// 	}	  
-// };
-
-// Check with mod % 1 = 0
+// To do
+// Check inputs with mod % 1 = 0 to verify whole numbers
+// What if the user wants an ID which isn't included on the list?
 
 function validateCountingNumberCheck(input) {
 	// verify number is a counting number
 	if (parseInt(input.item_Quantity) && parseInt(input.item_ID) > 0) {
 		console.log("Double Check Passed")
 		return true;
-	} else {
+	} 
+	else {
 		console.log("Failed Double Check")
 		errorReturn();
 		return false;
@@ -80,18 +38,13 @@ function validateCountingNumberCheck(input) {
 
 function errorReturn() {
 	console.log("Something went wrong, please try again");
-	// runBamazon();
-	// add prompt - would you like to restart?
+	connection.end();
 }
 
 function inventoryDisplay() {
-	// 
 	connection.query("SELECT * FROM products", function (error, results) {
 		if (error) throw error
-		// console.log(results)
-
 		var products = results.map(product => {
-			// console.log(product)
 			return {
 				id: product.id,
 				name: product.products_name,
@@ -100,19 +53,19 @@ function inventoryDisplay() {
 				stock: product.stock_quantity
 			}
 		})
-		// console.log(products);
 		var table = new Table({
 			head:["ID", "Name", "Department", "Price", "Quantity in Stock"]
 		})
 		for (product of products) {
-			
 			table.push([product.id, product.name, product.department, product.price, product.stock])
-		
-		}
+		};
 		console.log(table.toString());
 	})
 doubleCheck();
 };
+
+var itemID;
+var item_Quantity;
 
 function customerInquirer() {
 	console.log("Got to inquirer")
@@ -121,89 +74,68 @@ function customerInquirer() {
 			type: 'input',
 			name: 'item_ID',
 			message: 'Enter the item ID',
-			// validate: validateIDCheck(),
-			// validate: validateIDCheck,
 			filter: Number
 		},
 		{
 			type: 'input',
 			name: 'item_Quantity',
 			message: 'How many?',
-			// validate: validateQuantityCheck(),
-			// validate: validateQuantityCheck,
 			filter: Number
 		}
 	]).then(function (input) {
-
-		// validateIDCheck(input);
-		// validateQuantityCheck(input);
 		var numberCheckVar = validateCountingNumberCheck(input);
 
 		if (numberCheckVar) {
-			// set these variables based on outputs of these functions to booleans - check if any are false
-			// return object - let user know if ID is wrong or if quantity is wrong
 			console.log("Item ID chosen is " + input.item_ID);
 			console.log("Item quantity decided upon is " + input.item_Quantity);
 			console.log("okay! got through!")
-			var itemID = parseInt(input.item_ID);
-			var item_Quantity = parseInt(input.item_Quantity);
-			// quantityCheck();
-			quantityCheck(item_Quantity);
-		}
-		else {
-			console.log("Something is wrong")
-			// return error function out
-			// error function out
-		}
+			 itemID = parseInt(input.item_ID);
+			 item_Quantity = parseInt(input.item_Quantity);
+			connection.query('Select * FROM products WHERE id = ' + itemID, function(err,res){
+				if(err){console.log(err)};
+				// console.log(res);
+				// console.log(res[0].stock_quantity)
+				// does res0 exist?
+				// console log out
+				// if res[0] else 
+				var stockQuantityCheck = res[0].stock_quantity;
+				console.log("Stock quantity is " + stockQuantityCheck)
+				if(item_Quantity <= res[0].stock_quantity){
+					// console.log("success");
+					var orderTotal = res[0].price * item_Quantity;
+					// console.log("update database");
+					var updateString = 'UPDATE products SET stock_quantity = ' + (res[0].stock_quantity - item_Quantity) + ' WHERE id = ' + itemID;
+					connection.query(updateString, function(err, data) {
+						if (err) throw err;
+						console.log(data);
+						console.log("Got through! Successfully ordered");
+						console.log("Your order total is " + orderTotal + " dollars");
+						console.log("Thank you for your patronage")
+						connection.end();
+					})
+		} else{
+			console.log("Error: Insufficient Quantity");
+			console.log("Sorry, there isn't enough " + res[0].products_name + " in stock");
+			connection.end();
+		};
+					
+			})};
 	})
-};
-
-function quantityCheck() {
-
-	// if (item ID exists && quantity > sql quantity check){
-	// sufficientQuantity() 
-	// }
-	// else { 
-	// insufficientQuantity()
-	// };
-};
-
-function sufficientQuantity() {
-	//   console log success
-	// Ssubtract from amount on SQL file
-	// call order total calculation
-	// orderTotalCalculation();
-	orderTotalCalculation();
-
-};
-
-function insufficientQuantity() {
-	//   Console log error, kick out user
-	console.log("We don't have enough!")
-	errorReturn();
-};
-
-function orderTotalCalculation() {
-	// log quantity * price
-	console.log("Thank you for your purchase")
-	// kick user back out
-
-};
-
-function runBamazon() {
-	inventoryDisplay();
-	// customerInquirer();
-	// doubleCheck();
 };
 
 function doubleCheck() {
 confirm('Would you like to purchase anything?')
   .then(function confirmed() {
 	console.log('Which item would you like to buy?');
+	customerInquirer();
 
   }, function cancelled() {
-    console.log('Come back anytime');
+	console.log('Come back anytime');
+	connection.end();
   });
 }
+function runBamazon() {
+	inventoryDisplay();
+};
 
 runBamazon();

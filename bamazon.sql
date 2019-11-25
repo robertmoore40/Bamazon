@@ -14,11 +14,19 @@ PRIMARY KEY(id)
 );
 
 INSERT INTO products (products_name, department_name, price, stock_quantity)
-VALUES ("vanilla", "ice cream", 2.50, 100),
-("chocolate", "ice cream", 2.50, 152),
-("strawberry", "ice cream", 2.50, 40),
-("rocky road", "ice cream", 2.50, 20),
-("mint chocolate chip", "ice cream", 2.50, 50);
+VALUES ("Orange IFruit", "Electronics", 699.99, 100),
+("Call of Honor 37: War", "Video Games", 59.99, 1500),
+("Confection Microwave", "Appliances", 82.99, 30),
+("Facezone Friendfinder", "Video Games", 44.99, 140),
+("Dr. Spider: Revengers", "Comic Books", 8.05, 15),
+("The Crookshank Re-uption", "Movies", 12.56, 50),
+("Dawnzer's Leelight", "Appliances", 66.99, 14),
+("Edge of Tomorrow 2: 2 Edge, 2 Tomorrow", "Movies", 15.99, 9000),
+("58000 Inch Plasma Screen TV", "Appliances", 829.99, 3),
+("Egg Cooker", "Appliances", 14.99, 25),
+("Sepuku Puzzles", "Books", 3.99, 10),
+("Soulsbourne", "Video Games", 69.99, 500),
+("How to Pick Up Fair Maidens", "Books", 5.99, 70);
 
 SELECT * FROM products
 
