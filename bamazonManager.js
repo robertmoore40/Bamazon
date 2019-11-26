@@ -4,6 +4,9 @@ var mysql = require('mysql');
 var Table = require('cli-table');
 var confirm = require('inquirer-confirm');
 
+var itemID;
+var item_Quantity;
+
 var connection = mysql.createConnection({
 	host: 'localhost',
 	port: 3306,
@@ -80,22 +83,6 @@ function viewLow(){
 })};
 
 function inventoryAdd(){
-// inquirer.prompt([
-// 	{
-// 			name: "item_ID",
-// 			type: "input",
-// 			message: "Enter item ID"
-// 	},
-// 	{
-// 			name: "stock_quantity",
-// 			type: "input",
-// 			message: "How much would you like to add to the current stock?"
-// 	}
-// 	]).then(function(answer) {});
-//     console.log("inventory add chosen");
-//     // same as buying, just a sign change
-	// What to do if customer chooses an ID that isn't on the list. n=1000 or something?
-	console.log("Got to inquirer")
 	inquirer.prompt([
 		{
 			type: 'input',
@@ -111,25 +98,15 @@ function inventoryAdd(){
 		}
 	]).then(function (input) {
 		var numberCheckVar = validateCountingNumberCheck(input);
-
 		if (numberCheckVar) {
 			console.log("Item ID chosen is " + input.item_ID);
 			console.log("Item quantity to add is " + input.item_Quantity);
-			console.log("okay! got through!")
 			 itemID = parseInt(input.item_ID);
 			 item_Quantity = parseInt(input.item_Quantity);
 			connection.query('Select * FROM products WHERE id = ' + itemID, function(err,res){
 				if(err){console.log(err)};
-				// console.log(res);
-				// console.log(res[0].stock_quantity)
-				// does res0 exist?
-				// console log out
-				// if res[0] else 
 				var stockQuantityCheck = res[0].stock_quantity;
 				console.log("Stock quantity is " + stockQuantityCheck)
-				if(item_Quantity <= res[0].stock_quantity){
-					// console.log("success");
-
 					var updateString = 'UPDATE products SET stock_quantity = ' + (res[0].stock_quantity + item_Quantity) + ' WHERE id = ' + itemID;
 					connection.query(updateString, function(err, data) {
 						if (err) throw err;
@@ -137,22 +114,53 @@ function inventoryAdd(){
 						console.log("Got through! Successfully added");
 						connection.end();
 					})
-		};
-					
-			})};
-	})
-};
-
+        });
+    };
+})};
 
 function newProductAdd(){
-    console.log("Add new product chosen")
-    // insert into database
-    // INSERT INTO
-    // double check this - traversy media check on this
-    // grabs name of table, pushes new values
-    // if auto-increment, no need to assign new ID
+        inquirer.prompt([
+        {
+            name: "Name",
+            type: "input",
+            message: "Product Name?"
+        },
+        {
+            name:"Category",
+            type:"input",
+            message:"Product Category?"
+        },
+        {
+            name:"Price",
+            type:"input",
+            message:"Product Price?"
+        },
+        {
+            name:"Quantity",
+            type:"input",
+            message:"Quantity?"
+        },
+    
+        ]).then(function(input){
+            var name = input.Name;
+            var category = input.Category;
+            var price = input.Price;
+            var quantity = input.Quantity;
+            newInventoryItem(name,category,price,quantity); 
+        });
+      };
+    
+function newInventoryItem(name,category,price,quantity){
+          connection.query('INSERT INTO products (products_name,department_name,price,stock_quantity) VALUES("' + name + '","' + category + '",' + price + ',' + quantity +  ')');
+          viewProducts();
 };
 
+// function testfunction(){
+//     connection.query('INSERT INTO products (products_name,department_name,price,stock_quantity) VALUES("' + "name" + '","' + "category" + '",' + 1.99 + ',' + 100 +  ')');
+//     viewProducts();
+// };
+
+// testfunction();
 runBamazon();
 
 function validateCountingNumberCheck(input) {
@@ -169,6 +177,6 @@ function validateCountingNumberCheck(input) {
 	}
 };
 
-//   * If a manager selects `Add to Inventory`, your app should display a prompt that will let the manager "add more" of any item currently in the store.
+
 //   * If a manager selects `Add New Product`, it should allow the manager to add a completely new product to the store.
 

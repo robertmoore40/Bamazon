@@ -23,15 +23,27 @@ connection.connect(function (err) {
 // Check inputs with mod % 1 = 0 to verify whole numbers
 // What if the user wants an ID which isn't included on the list?
 
+function wholeNumberCheck(input) {
+	if (Number.isInteger(parseInt(input.item_Quantity)) && Number.isInteger(parseInt(input.item_ID))) {
+		console.log("Passed Whole Number Check")
+		return true;
+	} 
+	else {
+		console.log("Failed Whole Number Check")
+		errorReturn();
+		return false;
+	}
+};
+
 function validateCountingNumberCheck(input) {
 	// verify number is a counting number
 	// rather than daisy chain qualifications - write a function for each of the qualifications, for debugging
 	if (parseInt(input.item_Quantity) && parseInt(input.item_ID) > 0) {
-		console.log("Double Check Passed")
+		console.log("Positive Check Passed")
 		return true;
 	} 
 	else {
-		console.log("Failed Double Check")
+		console.log("Positive Check Failed")
 		errorReturn();
 		return false;
 	}
@@ -98,32 +110,25 @@ function customerInquirer() {
 			filter: Number
 		}
 	]).then(function (input) {
-		var numberCheckVar = validateCountingNumberCheck(input);
+		var numberCheckVar = validateCountingNumberCheck(input) && wholeNumberCheck(input);
 
-		if (numberCheckVar) {
+
+		if (numberCheckVar && wholeNumberCheck) {
 			console.log("Item ID chosen is " + input.item_ID);
 			console.log("Item quantity decided upon is " + input.item_Quantity);
-			console.log("okay! got through!")
 			 itemID = parseInt(input.item_ID);
 			 item_Quantity = parseInt(input.item_Quantity);
 			connection.query('Select * FROM products WHERE id = ' + itemID, function(err,res){
 				if(err){console.log(err)};
-				// console.log(res);
-				// console.log(res[0].stock_quantity)
-				// does res0 exist?
-				// console log out
-				// if res[0] else 
 				var stockQuantityCheck = res[0].stock_quantity;
 				console.log("Stock quantity is " + stockQuantityCheck)
 				if(item_Quantity <= res[0].stock_quantity){
-					// console.log("success");
 					var orderTotal = res[0].price * item_Quantity;
-					// console.log("update database");
 					var updateString = 'UPDATE products SET stock_quantity = ' + (res[0].stock_quantity - item_Quantity) + ' WHERE id = ' + itemID;
 					connection.query(updateString, function(err, data) {
 						if (err) throw err;
 						// console.log(data);
-						console.log("Got through! Successfully ordered");
+						console.log("Successfully ordered");
 						console.log("Your order total is " + orderTotal + " dollars");
 						console.log("Thank you for your patronage")
 						connection.end();
