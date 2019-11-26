@@ -25,6 +25,7 @@ connection.connect(function (err) {
 
 function validateCountingNumberCheck(input) {
 	// verify number is a counting number
+	// rather than daisy chain qualifications - write a function for each of the qualifications, for debugging
 	if (parseInt(input.item_Quantity) && parseInt(input.item_ID) > 0) {
 		console.log("Double Check Passed")
 		return true;
@@ -37,12 +38,25 @@ function validateCountingNumberCheck(input) {
 };
 
 function errorReturn() {
+	
 	console.log("Something went wrong, please try again");
 	connection.end();
+	// Monday Tutor Session:MTS: if you have a global variable array "errors", push this error into the array, print array
 }
 
 function inventoryDisplay() {
 	connection.query("SELECT * FROM products", function (error, results) {
+		// WHEN GETTING BACK PRODUCTS, FIND ARRAY LENGTH AND STORE IT AS A VARIABLE
+		// IF ID>results.length, ERROR;
+		// MAKE A FUNCTION WHICH RETURNS TRUE OR FALSE
+		// Based on if its greater than all item IDs
+		// Upon this, you'll be able to synchronously check whole, integer, >0, <length
+		// key word synchronously, this is atypical\
+	 	// perhaps make another array based on IDs?
+		// run check and see if ID exists by looping through array, does ID exist in the array?
+		// research .includes method
+		// research .indexOf method (Most likely what I would like to use in this case) 
+		// 
 		if (error) throw error
 		var products = results.map(product => {
 			return {
@@ -68,6 +82,7 @@ var itemID;
 var item_Quantity;
 
 function customerInquirer() {
+	// What to do if customer chooses an ID that isn't on the list. n=1000 or something?
 	console.log("Got to inquirer")
 	inquirer.prompt([
 		{
@@ -107,7 +122,7 @@ function customerInquirer() {
 					var updateString = 'UPDATE products SET stock_quantity = ' + (res[0].stock_quantity - item_Quantity) + ' WHERE id = ' + itemID;
 					connection.query(updateString, function(err, data) {
 						if (err) throw err;
-						console.log(data);
+						// console.log(data);
 						console.log("Got through! Successfully ordered");
 						console.log("Your order total is " + orderTotal + " dollars");
 						console.log("Thank you for your patronage")
