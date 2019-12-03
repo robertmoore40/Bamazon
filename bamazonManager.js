@@ -70,6 +70,7 @@ function viewProducts() {
 			table.push([product.id, product.name, product.department, product.price, product.stock])
 		};
 		console.log(table.toString());
+		connection.end();
 	})
 };
 

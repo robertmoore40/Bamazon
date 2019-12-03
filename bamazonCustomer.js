@@ -49,6 +49,10 @@ function validateCountingNumberCheck(input) {
 	}
 };
 
+function checkRandomNumber (){
+	// check something here
+}
+
 function errorReturn() {
 	
 	console.log("Something went wrong, please try again");
@@ -110,10 +114,53 @@ function customerInquirer() {
 			filter: Number
 		}
 	]).then(function (input) {
-		var numberCheckVar = validateCountingNumberCheck(input) && wholeNumberCheck(input);
+		// var numberCheckVar = validateCountingNumberCheck(input) && wholeNumberCheck(input);
+		// nothing asynchronous
+		// take input here
+
+		// wholeNumberCheck();
+		// validateCountingNumberCheck();
+		// checkRandomNumber();
+
+// when you return something - it stops running! Won't continue in single threaded JS
+
+		// one way to handle it is through promises - not needed here
+		// another way to do it is a built in error handling system called Try/Catch
+		// will automatically return an error object (console.log object?)
+		// return true to continue
+		// return error, error 
+		
+
+		// the functions will continue to run
+		// set a variable to function 
+		// var xyz = wholenumbercheck();
+
+		// below - if statement - 
+		// is each one of them is true-
+
+		// if functionA && functionB && functionC = true
+		// if (functionA() && functionB() && functionC())
+		// continue
+		// else error statement
+		
+		// this is a little messy, what you usually see is a variable set to the outcome,
+		// set to the outcome of each function
+
+		// var dog cat horse
+		// if (dog && cat && horse){
+			// continue function
+		// }
+		// else {
+			// errorfunction(console.log?? anything like that - KISS);
+			//
+		// }
+		// 
+		//if the function stops running - return function as if statement - 
+		// below that outside of the if block, return error function or console log 
 
 
-		if (numberCheckVar && wholeNumberCheck) {
+
+		// if (numberCheckVar && wholeNumberCheck) {
 			console.log("Item ID chosen is " + input.item_ID);
 			console.log("Item quantity decided upon is " + input.item_Quantity);
 			 itemID = parseInt(input.item_ID);
@@ -139,9 +186,9 @@ function customerInquirer() {
 			connection.end();
 		};
 					
-			})};
-	})
-};
+			})});
+	}
+;
 
 function doubleCheck() {
 confirm('Would you like to purchase anything?')
