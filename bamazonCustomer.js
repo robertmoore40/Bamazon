@@ -142,7 +142,7 @@ function customerInquirer() {
 		// if (functionA() && functionB() && functionC())
 		// continue
 		// else error statement
-		
+		// n === Math.floor(n)
 		// this is a little messy, what you usually see is a variable set to the outcome,
 		// set to the outcome of each function
 
