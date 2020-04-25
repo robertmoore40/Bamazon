@@ -10,3 +10,5 @@ bamazonManager allows you to choose several different functions which are chosen
 
 Technologies Used: Javascript, Node, SQL/MySQL
 
+Pictures of the App in action are included in the workingpics folder
+
